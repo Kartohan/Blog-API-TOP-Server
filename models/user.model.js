@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const bcrypt = require("bcryptjs");
 
 const UserSchema = new Schema({
   firstname: {
@@ -29,5 +30,8 @@ const UserSchema = new Schema({
 UserSchema.virtual("fullname").get(function () {
   return this.firstname + " " + this.lastname;
 });
-
+UserSchema.methods.isValidPassword = async function (password) {
+  const result = bcrypt.compare(password, this.password);
+  return result;
+};
 module.exports = mongoose.model("User", UserSchema);

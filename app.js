@@ -13,6 +13,8 @@ mongoose.connect(MONGODB, (err) => {
   console.log("Connected to DB");
 });
 
+require("./config/passport");
+
 const apiRouter = require("./routes/api");
 const indexRouter = require("./routes/index");
 

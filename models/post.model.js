@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
   author: {
-    type: mongoose.SchemaTypes.ObjectId,
-    retuired: true,
+    type: Schema.Types.ObjectId,
+    required: true,
     ref: "User",
   },
   createdIn: {
@@ -12,8 +12,12 @@ const PostSchema = new Schema({
     default: Date.now,
   },
   comments: {
-    type: [String],
+    type: [Schema.Types.ObjectId],
     ref: "Comment",
+  },
+  draft: {
+    type: Boolean,
+    default: true,
   },
   title: {
     type: String,
@@ -27,7 +31,7 @@ const PostSchema = new Schema({
     type: String,
     required: true,
   },
-  image: {
+  imageURL: {
     type: String,
     required: true,
   },
