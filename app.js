@@ -15,8 +15,9 @@ mongoose.connect(MONGODB, (err) => {
 
 require("./config/passport");
 
-const apiRouter = require("./routes/api");
-const indexRouter = require("./routes/index");
+const userRouter = require("./routes/user");
+const postRouter = require("./routes/post");
+const commentRouter = require("./routes/comment");
 
 const app = express();
 
@@ -30,8 +31,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api", apiRouter);
-app.use("/", indexRouter);
+app.use("/api/posts", commentRouter);
+app.use("/api/users", userRouter);
+app.use("/api/posts", postRouter);
+
+app.get("/", (req, res, next) => {
+  res.redirect("/api/posts");
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -46,7 +52,11 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({
+    message: err.message,
+    status: err.status,
+    stack: err.stack,
+  });
 });
 
 module.exports = app;
