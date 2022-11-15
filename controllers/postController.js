@@ -45,6 +45,13 @@ const upload = multer({
 });
 
 exports.createPost = [
+  (req, res, next) => {
+    if (!Array.isArray(req.body.category)) {
+      req.body.category =
+        typeof req.body.category === "undefined" ? [] : [req.body.category];
+    }
+    next();
+  },
   upload.single("image"),
   body("title")
     .trim()
@@ -61,6 +68,7 @@ exports.createPost = [
     .isLength({ min: 1 })
     .withMessage("Please fill the post detail field")
     .escape(),
+  body("category.*").escape(),
   checkSchema({
     image: {
       custom: {
@@ -78,6 +86,7 @@ exports.createPost = [
       title: req.body.title,
       description: req.body.description,
       postDetail: req.body.postDetail,
+      categories: req.body.category,
     };
     if (!errors.isEmpty()) {
       res.json({
@@ -90,6 +99,7 @@ exports.createPost = [
       title: req.body.title,
       description: req.body.description,
       postDetail: req.body.postDetail,
+      categories: req.body.category,
       imageURL: path.join("/uploads/", req.file.filename),
       author: req.user._id,
     });
@@ -103,6 +113,13 @@ exports.createPost = [
 ];
 
 exports.updatePost = [
+  (req, res, next) => {
+    if (!Array.isArray(req.body.category)) {
+      req.body.category =
+        typeof req.body.category === "undefined" ? [] : [req.body.category];
+    }
+    next();
+  },
   upload.single("image"),
   body("title")
     .trim()
@@ -119,6 +136,7 @@ exports.updatePost = [
     .isLength({ min: 1 })
     .withMessage("Please fill the post detail field")
     .escape(),
+  body("category.*").escape(),
   checkSchema({
     image: {
       custom: {
@@ -142,6 +160,7 @@ exports.updatePost = [
       title: req.body.title,
       description: req.body.description,
       postDetail: req.body.postDetail,
+      categories: req.body.category,
     };
     if (!errors.isEmpty()) {
       res.json({
@@ -154,6 +173,7 @@ exports.updatePost = [
       title: req.body.title,
       description: req.body.description,
       postDetail: req.body.postDetail,
+      categories: req.body.category,
       imageURL:
         undefined === req.file
           ? undefined

@@ -18,6 +18,7 @@ require("./config/passport");
 const userRouter = require("./routes/user");
 const postRouter = require("./routes/post");
 const commentRouter = require("./routes/comment");
+const categoryRouter = require("./routes/category");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/posts", commentRouter);
 app.use("/api/users", userRouter);
 app.use("/api/posts", postRouter);
+app.use("/api/category", categoryRouter);
 
 app.get("/", (req, res, next) => {
   res.redirect("/api/posts");
