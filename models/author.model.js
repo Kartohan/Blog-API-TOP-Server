@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const CommentSchema = new Schema({
+const AuthorSchema = new Schema({
   firstname: {
     type: String,
     required: true,
@@ -10,24 +10,19 @@ const CommentSchema = new Schema({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  comment: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
-  post: {
-    type: Schema.Types.ObjectId,
+  posts: {
+    type: [Schema.Types.ObjectId],
     ref: "Post",
+  },
+  description: {
+    type: String,
     required: true,
+  },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
   },
 });
 
-module.exports = mongoose.model("Comment", CommentSchema);
+module.exports = mongoose.model("Author", AuthorSchema);

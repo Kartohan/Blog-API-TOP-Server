@@ -69,7 +69,7 @@ exports.deleteComment = (req, res, next) => {
     }
     if (!comment) {
       res.json({
-        message: "Comment do not exist",
+        error: "Comment do not exist",
       });
       return;
     }
@@ -89,7 +89,7 @@ exports.deleteAllPostComments = (req, res, next) => {
       }
       if (post.comments.length === 0) {
         res.json({
-          message: "Post don't have any comment",
+          error: "Post don't have any comment",
         });
         return;
       }
@@ -107,12 +107,11 @@ exports.getOneComment = (req, res, next) => {
     }
     if (!comment) {
       res.json({
-        message: "There is no comment with this id",
+        error: "There is no comment with this id",
       });
       return;
     }
     res.json({
-      message: "Comment found",
       comment,
     });
   });

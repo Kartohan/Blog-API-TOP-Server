@@ -3,14 +3,6 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new Schema({
-  firstname: {
-    type: String,
-    required: true,
-  },
-  lastname: {
-    type: String,
-    required: true,
-  },
   username: {
     type: String,
     required: true,
@@ -19,17 +11,12 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
-  posts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Post",
-    },
-  ],
+  permission: {
+    type: "String",
+    default: "Admin",
+  },
 });
 
-UserSchema.virtual("fullname").get(function () {
-  return this.firstname + " " + this.lastname;
-});
 UserSchema.methods.isValidPassword = async function (password) {
   const result = bcrypt.compare(password, this.password);
   return result;

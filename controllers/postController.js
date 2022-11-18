@@ -1,21 +1,24 @@
 const { body, validationResult, checkSchema } = require("express-validator");
 const Post = require("../models/post.model");
+const User = require("../models/user.model");
 const multer = require("multer");
 const path = require("path");
 
 exports.getPosts = (req, res, next) => {
-  Post.find({}, (err, posts) => {
-    res.json({
-      posts,
+  Post.find({})
+    .populate("author")
+    .exec((err, posts) => {
+      if (err) return next(err);
+      res.json({
+        posts,
+      });
     });
-  });
 };
 
 exports.getOnePost = (req, res, next) => {
   Post.findById(req.params.post_id, (err, post) => {
     if (err) return next(err);
     res.json({
-      message: "Post found",
       post,
     });
   });
@@ -87,6 +90,7 @@ exports.createPost = [
       description: req.body.description,
       postDetail: req.body.postDetail,
       categories: req.body.category,
+      author: req.body.author,
     };
     if (!errors.isEmpty()) {
       res.json({
@@ -101,7 +105,7 @@ exports.createPost = [
       postDetail: req.body.postDetail,
       categories: req.body.category,
       imageURL: path.join("/uploads/", req.file.filename),
-      author: req.user._id,
+      author: req.body.author,
     });
     newPost.save((err) => {
       if (err) return next(err);
@@ -161,6 +165,7 @@ exports.updatePost = [
       description: req.body.description,
       postDetail: req.body.postDetail,
       categories: req.body.category,
+      author: req.body.author,
     };
     if (!errors.isEmpty()) {
       res.json({
@@ -178,7 +183,7 @@ exports.updatePost = [
         undefined === req.file
           ? undefined
           : path.join("/uploads/", req.file.filename),
-      author: req.user._id,
+      author: req.body.author,
       _id: req.params.post_id,
     });
     Post.findByIdAndUpdate(req.params.post_id, newPost, (err) => {
@@ -198,7 +203,7 @@ exports.publishPost = (req, res, next) => {
       if (err) return next(err);
       if (!post) {
         res.json({
-          message: "Post not found",
+          error: "Post not found",
         });
         return;
       }
@@ -216,7 +221,7 @@ exports.unpublishPost = (req, res, next) => {
       if (err) return next(err);
       if (!post) {
         res.json({
-          message: "Post not found",
+          error: "Post not found",
         });
         return;
       }

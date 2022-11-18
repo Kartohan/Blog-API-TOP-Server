@@ -43,20 +43,6 @@ exports.signup = [
     })
     .withMessage("User Name already exists")
     .escape(),
-  body("firstname")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Enter a name")
-    .isAlphanumeric()
-    .withMessage("First Name field allow only letters A-z and numbers 0-9")
-    .escape(),
-  body("lastname")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Enter a Last Name")
-    .isAlphanumeric()
-    .withMessage("Last Name field allow only letters A-z and numbers 0-9")
-    .escape(),
   body("password")
     .trim()
     .isLength({ min: 6 })
@@ -80,8 +66,6 @@ exports.signup = [
     const errors = validationResult(req);
 
     const user = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
       username: req.body.userName,
     };
 
@@ -98,8 +82,6 @@ exports.signup = [
         return next(err);
       }
       const user = new User({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
         username: req.body.username,
         password: hashedPassword,
       });

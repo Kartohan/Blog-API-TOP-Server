@@ -6,12 +6,27 @@ exports.getCategory = (req, res, next) => {
     if (err) return next(err);
     if (categories == null) {
       res.json({
-        message: "There is no categories",
+        error: "There is no categories",
       });
       return;
     }
     res.json({
       categories: categories,
+    });
+  });
+};
+
+exports.getOneCategory = (req, res, next) => {
+  Category.findById(req.params.category_id, (err, category) => {
+    if (err) return next(err);
+    if (!category) {
+      res.json({
+        error: "There is no category",
+      });
+      return;
+    }
+    res.json({
+      category,
     });
   });
 };
