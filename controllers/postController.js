@@ -1,8 +1,9 @@
 const { body, validationResult, checkSchema } = require("express-validator");
 const Post = require("../models/post.model");
-const User = require("../models/user.model");
+const Author = require("../models/author.model");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 exports.getPosts = (req, res, next) => {
   Post.find({})
@@ -18,6 +19,12 @@ exports.getPosts = (req, res, next) => {
 exports.getOnePost = (req, res, next) => {
   Post.findById(req.params.post_id, (err, post) => {
     if (err) return next(err);
+    if (!post) {
+      res.json({
+        error: "There is no post",
+      });
+      return;
+    }
     res.json({
       post,
     });
@@ -71,6 +78,11 @@ exports.createPost = [
     .isLength({ min: 1 })
     .withMessage("Please fill the post detail field")
     .escape(),
+  body("author")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Please choose author")
+    .escape(),
   body("category.*").escape(),
   checkSchema({
     image: {
@@ -107,6 +119,15 @@ exports.createPost = [
       imageURL: path.join("/uploads/", req.file.filename),
       author: req.body.author,
     });
+    Author.findByIdAndUpdate(
+      req.body.author,
+      {
+        $push: { posts: newPost._id },
+      },
+      (err) => {
+        if (err) return next(err);
+      }
+    );
     newPost.save((err) => {
       if (err) return next(err);
       res.json({
@@ -230,4 +251,29 @@ exports.unpublishPost = (req, res, next) => {
       });
     }
   );
+};
+exports.deletePost = (req, res, next) => {
+  Post.findByIdAndDelete(req.params.post_id, (err, post) => {
+    if (!post) {
+      res.json({
+        error: "There is no post to delete",
+      });
+      return;
+    }
+    if (err) return next(err);
+    fs.unlink(path.join("public", post.imageURL), (error) => {
+      if (error) return next(error);
+    });
+    console.log(post.author);
+    Author.findByIdAndUpdate(
+      post.author,
+      { $pull: { posts: post._id } },
+      (err, author) => {
+        if (err) return next(err);
+      }
+    );
+    res.json({
+      message: "Post deleted",
+    });
+  });
 };

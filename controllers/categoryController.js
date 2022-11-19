@@ -3,13 +3,13 @@ const Category = require("../models/category.model");
 
 exports.getCategory = (req, res, next) => {
   Category.find({}, (err, categories) => {
-    if (err) return next(err);
-    if (categories == null) {
+    if (!categories) {
       res.json({
         error: "There is no categories",
       });
       return;
     }
+    if (err) return next(err);
     res.json({
       categories: categories,
     });
@@ -18,13 +18,13 @@ exports.getCategory = (req, res, next) => {
 
 exports.getOneCategory = (req, res, next) => {
   Category.findById(req.params.category_id, (err, category) => {
-    if (err) return next(err);
     if (!category) {
       res.json({
         error: "There is no category",
       });
       return;
     }
+    if (err) return next(err);
     res.json({
       category,
     });

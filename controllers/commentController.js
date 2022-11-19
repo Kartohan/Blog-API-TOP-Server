@@ -87,6 +87,12 @@ exports.deleteAllPostComments = (req, res, next) => {
       if (err) {
         return next(err);
       }
+      if (!post) {
+        res.json({
+          error: "There is no post",
+        });
+        return;
+      }
       if (post.comments.length === 0) {
         res.json({
           error: "Post don't have any comment",

@@ -25,4 +25,8 @@ const AuthorSchema = new Schema({
   },
 });
 
+AuthorSchema.virtual("fullname").get(function () {
+  return this.firstname + " " + this.lastname;
+});
+
 module.exports = mongoose.model("Author", AuthorSchema);

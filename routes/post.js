@@ -7,7 +7,7 @@ const postController = require("../controllers/postController");
 router.get("/", postController.getPosts);
 router.get("/:post_id", postController.getOnePost);
 router.post(
-  "/",
+  "/new_post",
   passport.authenticate("jwt", { session: false }),
   postController.createPost
 );
@@ -16,6 +16,7 @@ router.put(
   passport.authenticate("jwt", { session: false }),
   postController.updatePost
 );
+router.delete("/:post_id", postController.deletePost);
 router.post(
   "/:post_id/publish",
   passport.authenticate("jwt", { session: false }),
