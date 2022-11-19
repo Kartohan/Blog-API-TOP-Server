@@ -1,5 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const Author = require("../models/author.model");
+const Post = require("../models/post.model");
+const async = require("async");
 
 exports.getAuthor = (req, res, next) => {
   Author.find({}, (err, authors) => {
@@ -75,3 +77,39 @@ exports.createAuthor = [
     });
   },
 ];
+
+exports.deleteAuthor = (req, res, next) => {
+  async.parallel(
+    {
+      author: function (callback) {
+        Author.findById(req.params.author_id).exec(callback);
+      },
+      author_posts: function (callback) {
+        Post.find({ author: req.params.author_id }).exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      if (results.author_posts.length > 0) {
+        res.json({
+          error:
+            "You need to delete this posts before attemping to delete this author",
+          posts: results.author_posts,
+        });
+        return;
+      }
+      if (!results.author) {
+        res.json({
+          error: "There is no author",
+        });
+        return;
+      }
+      Author.findByIdAndRemove(req.params.author_id, (err) => {
+        if (err) return next(err);
+        res.json({
+          message: "Author deleted",
+        });
+      });
+    }
+  );
+};

@@ -56,3 +56,18 @@ exports.createCategory = [
     });
   },
 ];
+
+exports.deleteCategory = (req, res, next) => {
+  Category.findByIdAndDelete(req.params.category_id, (err, category) => {
+    if (!category) {
+      res.json({
+        error: "There is no category",
+      });
+      return;
+    }
+    if (err) return next(err);
+    res.json({
+      message: "Category deleted",
+    });
+  });
+};

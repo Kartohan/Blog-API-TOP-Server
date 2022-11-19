@@ -4,6 +4,7 @@ const Author = require("../models/author.model");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const async = require("async");
 
 exports.getPosts = (req, res, next) => {
   Post.find({})
@@ -161,6 +162,11 @@ exports.updatePost = [
     .isLength({ min: 1 })
     .withMessage("Please fill the post detail field")
     .escape(),
+  body("author")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Please choose author")
+    .escape(),
   body("category.*").escape(),
   checkSchema({
     image: {
@@ -207,8 +213,42 @@ exports.updatePost = [
       author: req.body.author,
       _id: req.params.post_id,
     });
-    Post.findByIdAndUpdate(req.params.post_id, newPost, (err) => {
+    Post.findByIdAndUpdate(req.params.post_id, newPost, (err, post) => {
+      if (!post) {
+        res.json({
+          error: "There is no post",
+        });
+        if (!!newPost.imageURL) {
+          fs.unlink(path.join("public", newPost.imageURL), (error) => {
+            if (error) return next(error);
+          });
+        }
+        return;
+      }
+      if (post.author !== newPost.author) {
+        Author.findByIdAndUpdate(
+          req.body.author,
+          {
+            $push: { posts: newPost._id },
+          },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+        Author.findByIdAndUpdate(
+          post.author,
+          {
+            $pull: { posts: post._id },
+          },
+          (err) => {
+            if (err) return next(err);
+          }
+        );
+      }
       if (err) return next(err);
+      fs.unlink(path.join("public", post.imageURL), (error) => {
+        if (error) return next(error);
+      });
       res.json({
         message: "Post successfully updated",
       });
@@ -253,27 +293,39 @@ exports.unpublishPost = (req, res, next) => {
   );
 };
 exports.deletePost = (req, res, next) => {
-  Post.findByIdAndDelete(req.params.post_id, (err, post) => {
-    if (!post) {
-      res.json({
-        error: "There is no post to delete",
-      });
-      return;
-    }
-    if (err) return next(err);
-    fs.unlink(path.join("public", post.imageURL), (error) => {
-      if (error) return next(error);
-    });
-    console.log(post.author);
-    Author.findByIdAndUpdate(
-      post.author,
-      { $pull: { posts: post._id } },
-      (err, author) => {
-        if (err) return next(err);
+  async.parallel(
+    {
+      post: function (callback) {
+        Post.findById(req.params.post_id).exec(callback);
+      },
+      author: function (callback) {
+        Author.find({ posts: req.params.post_id }).exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+      if (!results.post) {
+        res.json({
+          error: "There is no post to delete",
+        });
+        return;
       }
-    );
-    res.json({
-      message: "Post deleted",
-    });
-  });
+      Post.findByIdAndDelete(req.params.post_id, (err) => {
+        if (err) return next(err);
+      });
+      fs.unlink(path.join("public", results.post.imageURL), (error) => {
+        if (error) return next(error);
+      });
+      Author.findByIdAndUpdate(
+        results.post.author,
+        { $pull: { posts: results.post._id } },
+        (err, author) => {
+          if (err) return next(err);
+        }
+      );
+      res.json({
+        message: "Post deleted",
+      });
+    }
+  );
 };
