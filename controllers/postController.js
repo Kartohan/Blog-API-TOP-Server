@@ -1,6 +1,7 @@
 const { body, validationResult, checkSchema } = require("express-validator");
 const Post = require("../models/post.model");
 const Author = require("../models/author.model");
+const Category = require("../models/category.model");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");

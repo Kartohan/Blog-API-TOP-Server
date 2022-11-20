@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const Category = require("../models/category.model");
+const Post = require("../models/post.model");
 
 exports.getCategory = (req, res, next) => {
   Category.find({}, (err, categories) => {
@@ -16,17 +17,17 @@ exports.getCategory = (req, res, next) => {
   });
 };
 
-exports.getOneCategory = (req, res, next) => {
-  Category.findById(req.params.category_id, (err, category) => {
-    if (!category) {
+exports.getPostsFromOneCategory = (req, res, next) => {
+  Post.find({ categories: req.params.category_id }, (err, posts) => {
+    if (!posts) {
       res.json({
-        error: "There is no category",
+        error: "Category is empty",
       });
       return;
     }
     if (err) return next(err);
     res.json({
-      category,
+      posts,
     });
   });
 };
