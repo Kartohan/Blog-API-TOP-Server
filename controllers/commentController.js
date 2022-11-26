@@ -1,6 +1,7 @@
 const { body, validationResult } = require("express-validator");
 const Post = require("../models/post.model");
 const Comment = require("../models/comment.model");
+const async = require("async");
 
 exports.createComment = [
   body("firstname")
@@ -43,9 +44,12 @@ exports.createComment = [
       lastname: req.body.lastname,
       email: req.body.email,
       comment: req.body.comment,
+      post: req.params.post_id,
     });
     newComment.save((err) => {
-      if (err) return next(err);
+      if (err) {
+        console.log(err);
+      }
     });
     Post.findByIdAndUpdate(
       req.params.post_id,
@@ -53,11 +57,14 @@ exports.createComment = [
         $push: { comments: newComment._id },
       },
       (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.log(err);
+        }
       }
     );
     res.json({
       message: "Comment created",
+      newComment,
     });
   },
 ];
@@ -119,6 +126,21 @@ exports.getOneComment = (req, res, next) => {
     }
     res.json({
       comment,
+    });
+  });
+};
+
+exports.getCommentsForPost = (req, res, next) => {
+  Comment.find({ post: req.params.post_id }, (err, comments) => {
+    if (err) return next(err);
+    if (!comments) {
+      res.json({
+        error: "There is no comments",
+      });
+      return;
+    }
+    res.json({
+      comments,
     });
   });
 };

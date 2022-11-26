@@ -19,18 +19,21 @@ exports.getPosts = (req, res, next) => {
 };
 
 exports.getOnePost = (req, res, next) => {
-  Post.findById(req.params.post_id, (err, post) => {
-    if (err) return next(err);
-    if (!post) {
+  Post.findById(req.params.post_id)
+    .populate("author")
+    .populate("comments")
+    .exec((err, post) => {
+      if (err) return next(err);
+      if (!post) {
+        res.json({
+          error: "There is no post",
+        });
+        return;
+      }
       res.json({
-        error: "There is no post",
+        post,
       });
-      return;
-    }
-    res.json({
-      post,
     });
-  });
 };
 
 function checkImgErrors(req, file, cb) {

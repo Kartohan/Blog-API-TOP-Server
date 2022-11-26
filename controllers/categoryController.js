@@ -26,8 +26,12 @@ exports.getPostsFromOneCategory = (req, res, next) => {
       return;
     }
     if (err) return next(err);
-    res.json({
-      posts,
+    Category.findById(req.params.category_id, (err, category) => {
+      if (err) return next(err);
+      res.json({
+        posts,
+        category,
+      });
     });
   });
 };
