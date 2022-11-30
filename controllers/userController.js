@@ -8,13 +8,17 @@ exports.login = async (req, res, next) => {
   passport.authenticate("login", async (err, user) => {
     try {
       if (err || !user) {
-        const error = new Error("An error occurred.");
-        return next(err);
+        res.json({
+          error: "Invalid Username or Password",
+        });
+        return;
       }
       req.login(user, { session: false }, async (error) => {
-        if (error) return next(error);
+        if (error) {
+          return next(error);
+        }
 
-        const body = { _id: user._id };
+        const body = { _id: user._id, username: user.username };
         const token = jwt.sign({ user: body }, process.env.SECRET, {
           expiresIn: "1d",
         });
@@ -94,6 +98,12 @@ exports.signup = [
     });
   },
 ];
+
+exports.verify = (req, res, next) => {
+  res.json({
+    success: true,
+  });
+};
 
 exports.logout = function (req, res) {
   req.logout();
