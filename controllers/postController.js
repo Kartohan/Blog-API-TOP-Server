@@ -137,6 +137,7 @@ exports.createPost = [
       if (err) return next(err);
       res.json({
         message: "Post created",
+        post: newPost,
       });
     });
   },

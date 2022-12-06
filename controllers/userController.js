@@ -107,5 +107,7 @@ exports.verify = (req, res, next) => {
 
 exports.logout = function (req, res) {
   req.logout();
-  res.redirect("/");
+  res.json({
+    message: "Successfully logged out",
+  });
 };
