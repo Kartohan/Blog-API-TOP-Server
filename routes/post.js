@@ -28,6 +28,16 @@ router.post(
   postController.unpublishPost
 );
 router.post(
+  "/:post_id/pin",
+  passport.authenticate("jwt", { session: false }),
+  postController.pinPost
+);
+router.post(
+  "/:post_id/unpin",
+  passport.authenticate("jwt", { session: false }),
+  postController.unPinPost
+);
+router.post(
   "/protected",
   passport.authenticate("jwt", { session: false }),
   (req, res, next) => {

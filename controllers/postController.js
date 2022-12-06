@@ -279,6 +279,7 @@ exports.publishPost = (req, res, next) => {
     }
   );
 };
+
 exports.unpublishPost = (req, res, next) => {
   Post.findByIdAndUpdate(
     req.params.post_id,
@@ -297,6 +298,45 @@ exports.unpublishPost = (req, res, next) => {
     }
   );
 };
+
+exports.pinPost = (req, res, next) => {
+  Post.findByIdAndUpdate(
+    req.params.post_id,
+    { $set: { pinned: true } },
+    (err, post) => {
+      if (err) return next(err);
+      if (!post) {
+        res.json({
+          error: "Post not found",
+        });
+        return;
+      }
+      res.json({
+        message: "Post pinned",
+      });
+    }
+  );
+};
+
+exports.unPinPost = (req, res, next) => {
+  Post.findByIdAndUpdate(
+    req.params.post_id,
+    { $set: { pinned: false } },
+    (err, post) => {
+      if (err) return next(err);
+      if (!post) {
+        res.json({
+          error: "Post not found",
+        });
+        return;
+      }
+      res.json({
+        message: "Post unpinned",
+      });
+    }
+  );
+};
+
 exports.deletePost = (req, res, next) => {
   async.parallel(
     {
