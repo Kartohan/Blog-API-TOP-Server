@@ -130,11 +130,11 @@ exports.createPost = [
         $push: { posts: newPost._id },
       },
       (err) => {
-        if (err) return next(err);
+        if (err) return console.log(err);
       }
     );
     newPost.save((err) => {
-      if (err) return next(err);
+      if (err) return console.log(err);
       res.json({
         message: "Post created",
         post: newPost,
@@ -225,7 +225,7 @@ exports.updatePost = [
         });
         if (!!newPost.imageURL) {
           fs.unlink(path.join("public", newPost.imageURL), (error) => {
-            if (error) return next(error);
+            if (error) return console.log(err);
           });
         }
         return;
@@ -237,7 +237,7 @@ exports.updatePost = [
             $push: { posts: newPost._id },
           },
           (err) => {
-            if (err) return next(err);
+            if (err) return console.log(err);
           }
         );
         Author.findByIdAndUpdate(
@@ -246,16 +246,17 @@ exports.updatePost = [
             $pull: { posts: post._id },
           },
           (err) => {
-            if (err) return next(err);
+            if (err) return console.log(err);
           }
         );
       }
-      if (err) return next(err);
+      if (err) return console.log(err);
       fs.unlink(path.join("public", post.imageURL), (error) => {
-        if (error) return next(error);
+        if (error) return console.log(err);
       });
       res.json({
         message: "Post successfully updated",
+        post: newPost,
       });
     });
   },
@@ -356,16 +357,16 @@ exports.deletePost = (req, res, next) => {
         return;
       }
       Post.findByIdAndDelete(req.params.post_id, (err) => {
-        if (err) return next(err);
+        if (err) return console.log(err);
       });
       fs.unlink(path.join("public", results.post.imageURL), (error) => {
-        if (error) return next(error);
+        if (error) return console.log(err);
       });
       Author.findByIdAndUpdate(
         results.post.author,
         { $pull: { posts: results.post._id } },
         (err, author) => {
-          if (err) return next(err);
+          if (err) return console.log(err);
         }
       );
       res.json({
