@@ -223,6 +223,8 @@ exports.updatePost = [
               ? undefined
               : path.join("/uploads/", req.file.filename),
           author: req.body.author,
+          draft: results.post.draft,
+          pinned: results.post.pinned,
           comments: results.post.comments,
           _id: req.params.post_id,
         });

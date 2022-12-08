@@ -70,7 +70,7 @@ exports.createAuthor = [
       user: req.body.user,
     });
     newAuthor.save((err) => {
-      if (err) return next(err);
+      if (err) return console.log(err);
       res.json({
         message: "Author created",
       });
