@@ -206,62 +206,72 @@ exports.updatePost = [
       });
       return;
     }
-    const newPost = new Post({
-      title: req.body.title,
-      description: req.body.description,
-      postDetail: req.body.postDetail,
-      categories: req.body.category,
-      imageURL:
-        undefined === req.file
-          ? undefined
-          : path.join("/uploads/", req.file.filename),
-      author: req.body.author,
-      _id: req.params.post_id,
-    });
-    Post.findByIdAndUpdate(req.params.post_id, newPost, (err, post) => {
-      if (!post) {
-        res.json({
-          error: "There is no post",
+    async.series(
+      {
+        post: function (callback) {
+          Post.findById(req.params.post_id).exec(callback);
+        },
+      },
+      (err, results) => {
+        const newPost = new Post({
+          title: req.body.title,
+          description: req.body.description,
+          postDetail: req.body.postDetail,
+          categories: req.body.category,
+          imageURL:
+            undefined === req.file
+              ? undefined
+              : path.join("/uploads/", req.file.filename),
+          author: req.body.author,
+          comments: results.post.comments,
+          _id: req.params.post_id,
         });
-        if (!!newPost.imageURL) {
-          fs.unlink(path.join("public", newPost.imageURL), (error) => {
-            console.log("unlinked due to newPost.imageURL");
-            if (error) return console.log(err);
+        Post.findByIdAndUpdate(req.params.post_id, newPost, (err, post) => {
+          if (!post) {
+            res.json({
+              error: "There is no post",
+            });
+            if (!!newPost.imageURL) {
+              fs.unlink(path.join("public", newPost.imageURL), (error) => {
+                console.log("unlinked due to newPost.imageURL");
+                if (error) return console.log(err);
+              });
+            }
+            return;
+          }
+          if (post.author !== newPost.author) {
+            Author.findByIdAndUpdate(
+              req.body.author,
+              {
+                $push: { posts: newPost._id },
+              },
+              (err) => {
+                if (err) return console.log(err);
+              }
+            );
+            Author.findByIdAndUpdate(
+              post.author,
+              {
+                $pull: { posts: post._id },
+              },
+              (err) => {
+                if (err) return console.log(err);
+              }
+            );
+          }
+          if (err) return console.log(err);
+          if (!!newPost.imageURL) {
+            fs.unlink(path.join("public", post.imageURL), (error) => {
+              if (error) return console.log(error);
+            });
+          }
+          res.json({
+            message: "Post successfully updated",
+            post: newPost,
           });
-        }
-        return;
-      }
-      if (post.author !== newPost.author) {
-        Author.findByIdAndUpdate(
-          req.body.author,
-          {
-            $push: { posts: newPost._id },
-          },
-          (err) => {
-            if (err) return console.log(err);
-          }
-        );
-        Author.findByIdAndUpdate(
-          post.author,
-          {
-            $pull: { posts: post._id },
-          },
-          (err) => {
-            if (err) return console.log(err);
-          }
-        );
-      }
-      if (err) return console.log(err);
-      if (!!newPost.imageURL) {
-        fs.unlink(path.join("public", post.imageURL), (error) => {
-          if (error) return console.log(error);
         });
       }
-      res.json({
-        message: "Post successfully updated",
-        post: newPost,
-      });
-    });
+    );
   },
 ];
 
