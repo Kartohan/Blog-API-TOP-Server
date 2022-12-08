@@ -225,6 +225,7 @@ exports.updatePost = [
         });
         if (!!newPost.imageURL) {
           fs.unlink(path.join("public", newPost.imageURL), (error) => {
+            console.log("unlinked due to newPost.imageURL");
             if (error) return console.log(err);
           });
         }
@@ -251,9 +252,11 @@ exports.updatePost = [
         );
       }
       if (err) return console.log(err);
-      fs.unlink(path.join("public", post.imageURL), (error) => {
-        if (error) return console.log(err);
-      });
+      if (!!newPost.imageURL) {
+        fs.unlink(path.join("public", post.imageURL), (error) => {
+          if (error) return console.log(error);
+        });
+      }
       res.json({
         message: "Post successfully updated",
         post: newPost,
