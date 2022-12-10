@@ -11,6 +11,11 @@ router.post(
   authorController.createAuthor
 );
 router.get("/:author_id", authorController.getOneAuthor);
+router.put(
+  "/:author_id",
+  passport.authenticate("jwt", { session: false }),
+  authorController.updateAuthor
+);
 router.delete(
   "/:author_id",
   passport.authenticate("jwt", { session: false }),

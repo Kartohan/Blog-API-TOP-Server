@@ -19,7 +19,7 @@ exports.getAuthor = (req, res, next) => {
 };
 
 exports.getOneAuthor = (req, res, next) => {
-  Author.findById(req.params.category_id, (err, author) => {
+  Author.findById(req.params.author_id, (err, author) => {
     if (err) return next(err);
     if (!author) {
       res.json({
@@ -78,6 +78,73 @@ exports.createAuthor = [
   },
 ];
 
+exports.updateAuthor = [
+  body("firstname")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Please fill the First name field")
+    .escape(),
+  body("lastname")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Please fill the Last name field")
+    .escape(),
+  body("description")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Please fill the description field")
+    .escape(),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const author = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      description: req.body.description,
+    };
+    if (!errors.isEmpty()) {
+      res.json({
+        errors: errors.array(),
+        author,
+      });
+      return;
+    }
+    async.series(
+      {
+        author: function (callback) {
+          Author.findById(req.params.author_id).exec(callback);
+        },
+      },
+      (err, results) => {
+        if (err) console.log(err);
+        const newAuthor = new Author({
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          description: req.body.description,
+          user: results.author.user,
+          _id: req.params.author_id,
+          posts: results.author.posts,
+        });
+        Author.findByIdAndUpdate(
+          req.params.author_id,
+          newAuthor,
+          (err, author) => {
+            if (!author) {
+              res.json({
+                error: "There is no author",
+              });
+              return;
+            }
+            if (err) return console.log(err);
+            res.json({
+              message: "Author edited",
+            });
+          }
+        );
+      }
+    );
+  },
+];
+
 exports.deleteAuthor = (req, res, next) => {
   async.parallel(
     {
@@ -93,7 +160,7 @@ exports.deleteAuthor = (req, res, next) => {
       if (results.author_posts.length > 0) {
         res.json({
           error:
-            "You need to delete this posts before attemping to delete this author",
+            "You need to delete or change author of this posts before attemping to delete this author",
           posts: results.author_posts,
         });
         return;
