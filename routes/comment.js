@@ -5,6 +5,7 @@ const commentController = require("../controllers/commentController");
 
 /* GET home page. */
 router.post("/:post_id/new_comment", commentController.createComment);
+router.get("/last_comments", commentController.getLastComments);
 router.get("/:post_id/comments", commentController.getCommentsForPost);
 router.get("/:post_id/:comment_id", commentController.getOneComment);
 

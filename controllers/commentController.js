@@ -144,3 +144,14 @@ exports.getCommentsForPost = (req, res, next) => {
     });
   });
 };
+
+exports.getLastComments = (req, res, next) => {
+  Comment.find()
+    .sort("-createdAt")
+    .limit(10)
+    .exec(function (err, comments) {
+      res.json({
+        comments,
+      });
+    });
+};
