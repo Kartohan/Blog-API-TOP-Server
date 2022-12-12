@@ -33,10 +33,14 @@ I am very happy that I was able to complete this project. It was a long journey.
 
 ## Repo Links
 
-[Blog API | Client | Repo](https://www.google.com)
-[Blog API | CMS | Repo](https://www.google.com)
+[Blog API | Client | Repo](https://github.com/Kartohan/Blog-API-TOP-Client)<br/>
+
+[Blog API | CMS | Repo](https://github.com/Kartohan/Blog-API-TOP-CMS)<br/>
 
 ## Live Links
 
-[Blog API | Client | Live](https://www.google.com)
-[Blog API | CMS | Live](https://www.google.com)
+[Blog API | Client | Live](https://blog-api-top-client-production.up.railway.app)<br/>
+
+[Blog API | CMS | Live](https://blog-api-top-cms-production.up.railway.app)<br/>
+
+**If you want to access to CMS, please contant me on Discord - Kartoshechka#3776**

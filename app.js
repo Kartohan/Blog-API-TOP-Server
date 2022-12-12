@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
-// const compression = require("compression");
+const compression = require("compression");
 // const helmet = require("helmet");
 
 const MONGODB = process.env.MONGODB;
@@ -30,7 +30,7 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-// app.use(compression());
+app.use(compression());
 // app.use(helmet());
 app.use(logger("dev"));
 app.use(express.json());
