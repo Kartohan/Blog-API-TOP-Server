@@ -7,7 +7,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const compression = require("compression");
-const helmet = required("helmet");
+const helmet = require("helmet");
 
 const MONGODB = process.env.MONGODB;
 
