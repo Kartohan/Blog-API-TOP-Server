@@ -37,18 +37,15 @@ exports.createAuthor = [
   body("firstname")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the First name field")
-    .escape(),
+    .withMessage("Please fill the First name field"),
   body("lastname")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the Last name field")
-    .escape(),
+    .withMessage("Please fill the Last name field"),
   body("description")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the description field")
-    .escape(),
+    .withMessage("Please fill the description field"),
   (req, res, next) => {
     const errors = validationResult(req);
     const author = {
@@ -82,18 +79,15 @@ exports.updateAuthor = [
   body("firstname")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the First name field")
-    .escape(),
+    .withMessage("Please fill the First name field"),
   body("lastname")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the Last name field")
-    .escape(),
+    .withMessage("Please fill the Last name field"),
   body("description")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the description field")
-    .escape(),
+    .withMessage("Please fill the description field"),
   (req, res, next) => {
     const errors = validationResult(req);
     const author = {

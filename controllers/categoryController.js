@@ -37,11 +37,7 @@ exports.getPostsFromOneCategory = (req, res, next) => {
 };
 
 exports.createCategory = [
-  body("name")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Please fill the title")
-    .escape(),
+  body("name").trim().isLength({ min: 1 }).withMessage("Please fill the title"),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -4,26 +4,13 @@ const Comment = require("../models/comment.model");
 const async = require("async");
 
 exports.createComment = [
-  body("firstname")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Input First Name")
-    .escape(),
-  body("lastname")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Input Last Name")
-    .escape(),
+  body("firstname").trim().isLength({ min: 1 }).withMessage("Input First Name"),
+  body("lastname").trim().isLength({ min: 1 }).withMessage("Input Last Name"),
   body("email")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Input email in correct format")
-    .escape(),
-  body("comment")
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage("Input your comment")
-    .escape(),
+    .withMessage("Input email in correct format"),
+  body("comment").trim().isLength({ min: 1 }).withMessage("Input your comment"),
   (req, res, next) => {
     const errors = validationResult(req);
     const comment = {

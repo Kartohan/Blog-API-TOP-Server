@@ -71,24 +71,20 @@ exports.createPost = [
   body("title")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the title")
-    .escape(),
+    .withMessage("Please fill the title"),
   body("description")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the description")
-    .escape(),
+    .withMessage("Please fill the description"),
   body("postDetail")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the post detail field")
-    .escape(),
+    .withMessage("Please fill the post detail field"),
   body("author")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please choose author")
-    .escape(),
-  body("category.*").escape(),
+    .withMessage("Please choose author"),
+  body("category.*"),
   checkSchema({
     image: {
       custom: {
@@ -155,24 +151,20 @@ exports.updatePost = [
   body("title")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the title")
-    .escape(),
+    .withMessage("Please fill the title"),
   body("description")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the description")
-    .escape(),
+    .withMessage("Please fill the description"),
   body("postDetail")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please fill the post detail field")
-    .escape(),
+    .withMessage("Please fill the post detail field"),
   body("author")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Please choose author")
-    .escape(),
-  body("category.*").escape(),
+    .withMessage("Please choose author"),
+  body("category.*"),
   checkSchema({
     image: {
       custom: {

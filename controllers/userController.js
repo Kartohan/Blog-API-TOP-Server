@@ -45,20 +45,18 @@ exports.signup = [
       }
       return Promise.resolve();
     })
-    .withMessage("User Name already exists")
-    .escape(),
+    .withMessage("User Name already exists"),
   body("password")
     .trim()
     .isLength({ min: 6 })
     .withMessage("Password should be at least 6 characters long")
     .isAlphanumeric()
-    .withMessage("Password field allow only letters A-z and numbers 0-9")
-    .escape(),
+    .withMessage("Password field allow only letters A-z and numbers 0-9"),
   body("confirmpassword")
     .trim()
     .isLength({ min: 1 })
     .withMessage("Enter a password confirmation")
-    .escape()
+
     .custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Confirm password and password fields do not match");
