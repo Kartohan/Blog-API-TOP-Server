@@ -46,7 +46,7 @@ app.use("/api/category", categoryRouter);
 app.use("/api/author", authorRouter);
 
 app.get("/", (req, res, next) => {
-  res.redirect("/api/posts");
+  res.redirect(302, "/api/posts");
 });
 
 // catch 404 and forward to error handler
