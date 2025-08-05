@@ -40,8 +40,8 @@ I am very happy that I was able to complete this project. It was a long journey.
 
 ## Live Links
 
-[Blog API | Client | Live](https://blog-api-top-client-production.up.railway.app)<br/>
+[Blog API | Client | Live](https://blog-api-top-client.onrender.com/)<br/>
 
-[Blog API | CMS | Live](https://blog-api-top-cms-production.up.railway.app)<br/>
+[Blog API | CMS | Live](https://blog-api-top-cms.onrender.com/)<br/>
 
 **If you want to access to CMS, please contant me on Discord - Kartoshechka#3776**
